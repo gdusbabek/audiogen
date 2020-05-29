@@ -112,7 +112,7 @@ Version history
 Python 3 Punch-list
 -------------------
 - DONE tests for util.py
-- tests for noise.py
+- DONE tests for noise.py
 - tests for generators.py
 - tests for filters.py
 - tests for sampler.py
