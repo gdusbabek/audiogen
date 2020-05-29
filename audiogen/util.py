@@ -1,5 +1,5 @@
 
-import logging 
+import logging
 logger = logging.getLogger(__name__)
 
 import itertools
@@ -10,7 +10,7 @@ from .noise import white_noise
 from .noise import white_noise_samples
 from .noise import red_noise
 
-import sampler 
+import sampler
 
 def crop(gens, seconds=5, cropper=None):
 	'''
@@ -57,7 +57,7 @@ def crop_with_fades(gen, seconds, fade_in=0.01, fade_out=0.01):
 
 	for sample in middle:
 		yield sample
-	
+
 	for sample in multiply(end, linear_fade(fade_out_samples, direction="out")):
 		yield sample
 
@@ -78,7 +78,7 @@ def crop_with_fade_out(gen, seconds, fade=.01):
 
 	for sample in start:
 		yield sample
-	
+
 	for sample in multiply(end, fader()):
 		yield sample
 
@@ -87,17 +87,17 @@ def crop_at_zero_crossing(gen, seconds=5, error=0.1):
 	'''
 	Crop the generator, ending at a zero-crossing
 
-	Crop the generator to produce approximately seconds seconds 
-	(default 5s) of audio at the provided FRAME_RATE, attempting 
-	to end the clip at a zero crossing point to avoid clicking. 
+	Crop the generator to produce approximately seconds seconds
+	(default 5s) of audio at the provided FRAME_RATE, attempting
+	to end the clip at a zero crossing point to avoid clicking.
 	'''
 	source = iter(gen)
-	buffer_length = int(2 * error * sampler.FRAME_RATE)
-	
+	buffer_length = max(1, int(2 * error * sampler.FRAME_RATE))
+
 	# split the source into two iterators:
 	# - start, which contains the bulk of the sound clip
-	# - and end, which contains the final 100ms, plus 100ms past 
-	#   the desired clip length. We may cut the clip anywhere 
+	# - and end, which contains the final 100ms, plus 100ms past
+	#   the desired clip length. We may cut the clip anywhere
 	#   within this +/-100ms end buffer.
 	start = itertools.islice(source, 0, int((seconds - error) * sampler.FRAME_RATE))
 	end = itertools.islice(source, 0, buffer_length)
@@ -117,7 +117,7 @@ def crop_at_zero_crossing(gen, seconds=5, error=0.1):
 	#if best[0][1] != 0:
 	#	# we don't have a perfect zero crossing, so let's look for best fit?
 	#	pass
-	
+
 	# crop samples at index of best zero crossing
 	for sample in end[:best[0][0] + 1]:
 		yield sample
@@ -192,7 +192,7 @@ def envelope(gen, volume):
 def loop(*gens):
 	loops = [list(gen) for gen in gens]
 	while True:
-		for loop in loops: 
+		for loop in loops:
 			for sample in loop:
 				yield sample
 
@@ -200,37 +200,37 @@ def mixer(inputs, mix=None):
 	'''
 	Mix `inputs` together based on `mix` tuple
 
-	`inputs` should be a tuple of *n* generators. 
+	`inputs` should be a tuple of *n* generators.
 
 	`mix` should be a tuple of *m* tuples, one per desired
 	output channel. Each of the *m* tuples should contain
-	*n* generators, corresponding to the time-sequence of 
+	*n* generators, corresponding to the time-sequence of
 	the desired mix levels for each of the *n* input channels.
 
 	That is, to make an ouput channel contain a 50/50 mix of the
 	two input channels, the tuple would be:
 
 	    (constant(0.5), constant(0.5))
-	
+
 	The mix generators need not be constant, allowing for time-varying
-	mix levels: 
+	mix levels:
 
 	    # 50% from input 1, pulse input 2 over a two second cycle
 	    (constant(0.5), tone(0.5))
 
-	The mixer will return a list of *m* generators, each containing 
-	the data from the inputs mixed as specified. 
+	The mixer will return a list of *m* generators, each containing
+	the data from the inputs mixed as specified.
 
 	If no `mix` tuple is specified, all of the *n* input channels
-	will be mixed together into one generator, with the volume of 
+	will be mixed together into one generator, with the volume of
 	each reduced *n*-fold.
 
 	Example:
 
-	    # three in, two out; 
+	    # three in, two out;
 	    # 10Hz binaural beat with white noise across both channels
 	    mixer(
-	    		(white_noise(), tone(440), tone(450)), 
+	    		(white_noise(), tone(440), tone(450)),
 	    		(
 	    			(constant(.5), constant(1), constant(0)),
 	    			(constant(.5), constant(0), constant(1)),
