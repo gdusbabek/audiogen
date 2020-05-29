@@ -114,7 +114,7 @@ Python 3 Punch-list
 - DONE tests for util.py
 - DONE tests for noise.py
 - DONE tests for generators.py
-- tests for filters.py
+- DONE tests for filters.py
 - tests for sampler.py
 - Fun really starts. Upgrade to python 3 and fix tests.
 
