@@ -4,3 +4,5 @@
 README.html
 dist/
 .DS_Store
+.venv/**
+.python-version

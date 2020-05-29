@@ -1,0 +1,6 @@
+bitarray
+
+# pyaudio has some prerequisites:
+# (on linux) sudo apt-get install libasound-dev
+# then install portaudio from http://portaudio.com/download.html
+pyaudio
